@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,8 @@ func main() {
 	r.GET("/v1/kv/:key", func(c *gin.Context) {
 		key := c.Param("key")
 		val, ok := store[key]
+
+		fmt.Printf("\nGET called with key: [ %s ], value is: [ %s ]\n", key, val)
 
 		if !ok {
 			c.JSON(404, gin.H{
@@ -44,6 +47,8 @@ func main() {
 			return
 		}
 
+		fmt.Printf("\nPUT called with key: [ %s ], value: [ %s ]\n", key, val)
+
 		store[key] = string(val)
 		c.JSON(200, gin.H{"success": true})
 	})
@@ -51,6 +56,8 @@ func main() {
 	r.DELETE("/v1/kv/:key", func(c *gin.Context) {
 		key := c.Param("key")
 		_, ok := store[key]
+
+		fmt.Printf("\nDELETE called with key: [ %s ], exists: [ %t ]\n", key, ok)
 
 		if !ok {
 			c.JSON(404, gin.H{"error": "Key not found"})
